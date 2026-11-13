@@ -1,42 +1,72 @@
-<p align="center"><img src="docs/assets/banner.svg" alt="Retail Decision Lab — Turn weekly demand signals into planning decisions." width="100%"></p>
+# Retail Decision Lab
 
-<p align="center"><img src="docs/assets/badges/python.svg" alt="python" height="28"> <img src="docs/assets/badges/streamlit.svg" alt="streamlit" height="28"> <img src="docs/assets/badges/pandas.svg" alt="pandas" height="28"> <img src="docs/assets/badges/scikit-learn.svg" alt="scikit-learn" height="28"> <img src="docs/assets/badges/sqlite.svg" alt="sqlite" height="28"> <img src="docs/assets/badges/docker.svg" alt="docker" height="28"></p>
-
-<p align="center"><strong>A Streamlit analytics workspace for demand forecasting, promotion analysis, SQL exploration, and one-week retail planning.</strong></p>
+**Retail demand forecasting and decision-support workspace**
 
 ## Overview
 
-A Streamlit analytics workspace for demand forecasting, promotion analysis, SQL exploration, and one-week retail planning.
+Retail Decision Lab is a Python and Streamlit application for exploring retail demand and turning historical sales patterns into practical planning inputs. It uses the Corporación Favorita store-sales dataset and brings forecasting, promotion analysis, SQL exploration, and next-week planning into a single workflow.
 
-### Why it matters
+### Why this project matters
 
-Retail Decision Lab connects model development to the questions a planner actually asks—what demand is changing, where it is changing, and how to prepare the next-week plan.
+Retail planning involves decisions at multiple levels: overall demand, individual stores, and product families. The application connects a reproducible machine-learning pipeline with interactive views so those questions can be explored without working directly in notebooks.
 
-## Key features
+## Key capabilities
 
-- Forecast monitoring and executive demand views
-- Store and product-family exploration
-- Promotion and demand-spike analysis
-- Upload-based next-week planning workflow
-- SQLite marts for reusable business queries
+- Builds a store-and-product-family weekly demand panel from the official Kaggle source files.
+- Creates time-aware demand, transaction, calendar, and promotion features without using future observations.
+- Trains forecasting candidates and persists selected models for later inference.
+- Provides Streamlit views for executive demand, store/product-family exploration, and forecast monitoring.
+- Explores promotion associations and demand-spike patterns without presenting observational relationships as causal effects.
+- Builds reusable SQLite analytical marts using SQL window functions and aggregations.
+- Accepts a next-week planning CSV for scenario-oriented forecast generation.
 
-## Architecture
+## System architecture
 
-```mermaid
-flowchart LR
-  A[Kaggle Favorita files] --> B[Weekly panel]
-  B --> C[Feature pipeline]
-  C --> D[Forecast + classification models]
-  B --> E[SQLite marts]
-  D --> F[Streamlit workspace]
-  E --> F
-  G[Planning CSV] --> F
-```
+![Retail Decision Lab architecture — system components and principal workflows](docs/architecture-overview.svg)
+
+The diagram organizes the major flows into aligned lanes to make their responsibilities and handoffs clear. It is a high-level view; individual modules may also communicate across lanes.
+
+### How it works
+
+The pipeline first consolidates raw Favorita tables into a complete weekly panel. Feature generation uses lagged demand and other information available at planning time. Forecasting and classification artifacts are persisted separately from the dashboard, while SQLite provides reusable queries for the analytics views.
+
+A planning upload supplies known next-week calendar and promotion inputs. The inference path combines those inputs with historical features and produces forecasts for exploration in Streamlit.
 
 ## Technology stack
 
-**python** · **streamlit** · **pandas** · **scikit learn** · **sqlite** · **docker**
+| Technology | Purpose |
+| --- | --- |
+| **Python / pandas** | Data preparation, feature engineering, orchestration |
+| **LightGBM / scikit-learn** | Forecasting and classification models |
+| **Streamlit / Plotly** | Interactive decision-support interface |
+| **SQLite / SQL** | Reusable analytical marts and queries |
+| **Docker** | Containerized application startup |
+
+## Repository structure
+
+```text
+app/                       Streamlit dashboard
+src/favorita_benchmark.py  Forecasting and model selection
+src/favorita_analytics.py  Promotion, classification, SQL marts
+src/favorita_inference.py  Planning-file inference
+run_favorita_pipeline.py   End-to-end pipeline entry point
+data/                      Local input and analytical data
+models/                    Saved model artifacts
+reports/                   Generated research outputs
+tests/                     Pipeline and validation tests
+```
 
 ## Getting started
 
-Create a Python 3.13 environment, install `requirements.txt`, and place the official Favorita files under `data/raw/favorita/`. Run `python run_favorita_pipeline.py`, then `streamlit run app/main.py`.
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+# Add the official Favorita CSV files to data/raw/favorita/
+python run_favorita_pipeline.py
+streamlit run app/main.py
+```
+
+## Notes and prerequisites
+
+Use the official dataset files in `data/raw/favorita/`; they are not included in the repository. The upload-based planning workflow expects the CSV fields `week`, `store_nbr`, `family`, `promo_items`, `holiday_days`, and `oil_price`. This is a reproducible demonstration using public competition data, not a live commercial forecasting deployment.
