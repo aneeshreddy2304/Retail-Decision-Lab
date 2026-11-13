@@ -1,0 +1,11 @@
+{
+  "method": "Past-only 13-week median normalization with week-block bootstrap",
+  "promoted_observations": 145438,
+  "not_promoted_observations": 165970,
+  "mean_relative_demand_promoted": 1.1169393989936036,
+  "mean_relative_demand_not_promoted": 1.0957990264603705,
+  "observed_relative_difference": 0.021140372533233087,
+  "bootstrap_95_low": 0.0163556504891518,
+  "bootstrap_95_high": 0.06407970481467723,
+  "causal_claim": false
+}

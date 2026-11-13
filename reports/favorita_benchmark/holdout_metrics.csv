@@ -1,0 +1,9 @@
+level,WAPE,Bias,observations,model,model_type
+store-family,7.249968393598081,1.4916831967641122,14256,LightGBM Tweedie,Candidate
+store,4.779966000387943,1.4916831967641118,432,LightGBM Tweedie,Candidate
+family,3.2954931146692665,1.4916831967641127,264,LightGBM Tweedie,Candidate
+company-total,1.900934557060622,1.4916831967641115,8,LightGBM Tweedie,Candidate
+store-family,8.630861946970063,1.464281785357503,14256,Rolling Mean-4,Primary baseline
+store,6.350647809833123,1.4642817853575025,432,Rolling Mean-4,Primary baseline
+family,5.6520501189323955,1.464281785357503,264,Rolling Mean-4,Primary baseline
+company-total,4.528501165553705,1.4642817853575032,8,Rolling Mean-4,Primary baseline

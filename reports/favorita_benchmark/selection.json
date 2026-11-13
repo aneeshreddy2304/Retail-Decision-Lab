@@ -1,0 +1,21 @@
+{
+  "selected_model": "LightGBM Tweedie",
+  "selected_type": "Candidate",
+  "primary_baseline": "Rolling Mean-4",
+  "selection_level": "weekly store-family unit sales",
+  "selection_rule": "Candidate must improve mean CV WAPE by >=0.5 pp and >=5% relatively, win >=3/4 folds, and have |bias| <=10%.",
+  "protocol_revision": "The preliminary 1 pp threshold inherited from the prior 88% WAPE problem was replaced before opening any candidate-model holdout predictions. At an 11% baseline WAPE, 1 pp would require an inconsistent 9% relative gain; the frozen rule requires both 0.5 pp absolute and 5% relative skill.",
+  "holdout_start": "2017-06-25",
+  "holdout_end": "2017-08-13",
+  "development_weeks": 229,
+  "holdout_weeks": 8,
+  "series": 1782,
+  "rows": 390852,
+  "holdout_improvement": {
+    "improvement_pp": 1.3808935533719806,
+    "bootstrap_95_low": 0.6550541017840009,
+    "bootstrap_95_high": 2.0293372587323804,
+    "bootstrap_unit": "week",
+    "bootstrap_iterations": 5000
+  }
+}

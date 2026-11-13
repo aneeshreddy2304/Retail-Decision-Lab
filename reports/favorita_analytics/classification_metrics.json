@@ -1,0 +1,12 @@
+{
+  "target": "Weekly demand exceeds its prior 26-week 75th percentile",
+  "roc_auc": 0.7432779846936364,
+  "pr_auc": 0.5697947651545535,
+  "precision": 0.5106839186691312,
+  "recall": 0.5642743351987255,
+  "brier_score": 0.192358791075915,
+  "positive_rate": 0.30378725833271286,
+  "train_rows": 294228,
+  "test_rows": 80586,
+  "test_start": "2016-10-02"
+}
