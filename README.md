@@ -22,9 +22,59 @@ Retail planning involves decisions at multiple levels: overall demand, individua
 
 ## System architecture
 
-![Retail Decision Lab architecture — system components and principal workflows](docs/architecture-overview.svg)
+```mermaid
+flowchart TB
+    subgraph Inputs["Planning inputs"]
+        Favorita["Official Favorita CSV files<br/>sales • stores • transactions • oil • holidays"]
+        Plan["One-week planning CSV<br/>promotion and calendar inputs"]
+    end
 
-The diagram organizes the major flows into aligned lanes to make their responsibilities and handoffs clear. It is a high-level view; individual modules may also communicate across lanes.
+    Runner["run_favorita_pipeline.py"]
+
+    subgraph Forecasting["Forecast pipeline — favorita_benchmark.py"]
+        Panel["Complete weekly store × family panel"]
+        Features["Past-only lag, rolling, transaction, calendar, and store features"]
+        Selection["Time-series model and baseline selection"]
+        ForecastModel[("Forecast model artifact")]
+        Weekly[("favorita_weekly.parquet")]
+        Panel --> Features --> Selection --> ForecastModel
+        Panel --> Weekly
+    end
+
+    subgraph Analytics["Decision analytics — favorita_analytics.py"]
+        Promotion["Promotion analysis"]
+        Spike["Demand-spike classifier"]
+        SQLBuild["SQLite mart builder"]
+        SpikeModel[("Classifier artifact")]
+        SQLite[("SQLite database + exported marts")]
+        Weekly --> Promotion
+        Weekly --> Spike --> SpikeModel
+        Weekly --> SQLBuild --> SQLite
+    end
+
+    subgraph Inference["Planning inference — favorita_inference.py"]
+        Validate["Upload contract and horizon validation"]
+        Future["Join metadata and build future-week features"]
+        Predict["Artifact-backed unit forecast"]
+        Plan --> Validate --> Future --> Predict
+        Weekly --> Future
+        ForecastModel --> Predict
+    end
+
+    subgraph Experience["Streamlit decision workspace"]
+        App["app/main.py navigation"]
+        Views["Forecast monitor • executive overview • demand explorer<br/>forecast lab • promotion • classification • SQL • upload forecast"]
+        App --> Views
+    end
+
+    Favorita --> Runner --> Panel
+    Promotion --> Views
+    SpikeModel --> Views
+    SQLite --> Views
+    ForecastModel --> Views
+    Predict --> Views
+```
+
 
 ### How it works
 
